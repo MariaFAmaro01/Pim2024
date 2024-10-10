@@ -1,25 +1,21 @@
-// login.c
+// login.c: Implementa a função realizar_login, que solicita as credenciais do usuário e as compara com as armazenadas.
+
 #include <stdio.h>
 #include <string.h>
-#include "login.h"  // Inclui o cabeçalho com a declaração da função
+#include "login.h"
 
-// Função para realizar o login
-int realizar_login(char usuarios[][20], char senhas[][20]) {
+int realizar_login(char usuarios[MAX_USUARIOS][20], char senhas[MAX_USUARIOS][20]) {
     char usuario[20], senha[20];
     
-    printf("Digite seu nome de usuário: ");
+    printf("Usuário: ");
     scanf("%s", usuario);
-    printf("Digite sua senha: ");
+    printf("Senha: ");
     scanf("%s", senha);
     
-    // Verifica se o nome de usuário e a senha estão corretos
     for (int i = 0; i < MAX_USUARIOS; i++) {
         if (strcmp(usuario, usuarios[i]) == 0 && strcmp(senha, senhas[i]) == 0) {
-            printf("Login bem-sucedido! Bem-vindo, %s.\n", usuario);
-            return 1;  // Login válido
+            return 1; // Login bem-sucedido
         }
     }
-    
-    printf("Nome de usuário ou senha incorretos.\n");
-    return 0;  // Login inválido
+    return 0; // Login falhou
 }
