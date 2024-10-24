@@ -1,11 +1,13 @@
-//menu.h: Declara as funções do menu, que serão implementadas em menu.c.
-
 #ifndef MENU_H
 #define MENU_H
 
-void gerenciar_usuarios();
-void gerenciar_estoque();
-void gerenciar_produtos();
-void gerenciar_vendas();
+#include "login.h"
+#include "hortifruti.h"
+
+void displayMenu(User currentUser, User users[], int *userCount, Product products[], int *productCount);
+void manageUsers(User users[], int *userCount);
+void manageStock(Product products[], int *productCount);
+void manageSales(Product products[], int productCount);
+void manageUsers(User users[], int *userCount);
 
 #endif // MENU_H
