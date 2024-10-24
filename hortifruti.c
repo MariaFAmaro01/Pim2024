@@ -13,16 +13,6 @@ void loadUsers(User users[], int *userCount) {
     }
 }
 
-void loadProducts(Product products[], int *productCount) {
-    FILE *file = fopen("products.txt", "r");
-    if (file) {
-        while (fscanf(file, "%s %d", products[*productCount].name, &products[*productCount].quantity) != EOF) {
-            (*productCount)++;
-        }
-        fclose(file);
-    }
-}
-
 void saveUsers(User users[], int userCount) {
     FILE *file = fopen("users.txt", "w");
     if (file) {
@@ -33,12 +23,33 @@ void saveUsers(User users[], int userCount) {
     }
 }
 
+void loadProducts(Product products[], int *productCount) {
+    FILE *file = fopen("products.txt", "r");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo de produtos.\n");
+        return;
+    }
+    
+    while (fscanf(file, "%s %f", products[*productCount].name, &products[*productCount].price) != EOF) {
+        products[*productCount].id = *productCount; // Atribuindo o ID baseado no índice
+        (*productCount)++;
+    }
+
+    fclose(file);
+    printf("Produtos carregados com sucesso!\n");
+}
+
 void saveProducts(Product products[], int productCount) {
     FILE *file = fopen("products.txt", "w");
-    if (file) {
-        for (int i = 0; i < productCount; i++) {
-            fprintf(file, "%s %d\n", products[i].name, products[i].quantity);
-        }
-        fclose(file);
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo para salvar produtos.\n");
+        return;
     }
+
+    for (int i = 0; i < productCount; i++) {
+        fprintf(file, "%s %.2f\n", products[i].name, products[i].price);
+    }
+
+    fclose(file);
+    printf("Produtos salvos com sucesso!\n");
 }

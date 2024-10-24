@@ -3,6 +3,6 @@
 
 #include "common.h"
 
-void authenticate(User users[], int *userCount);
+int authenticate(User users[], int *userCount, User *currentUser); // Atualize para ter 3 parâmetros
 
 #endif // LOGIN_H

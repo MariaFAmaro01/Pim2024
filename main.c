@@ -8,16 +8,15 @@ int main() {
     Product products[MAX_PRODUCTS];
     int userCount = 0;
     int productCount = 0;
-
+    
+    // Carregar usuários e produtos
     loadUsers(users, &userCount);
     loadProducts(products, &productCount);
 
-    authenticate(users, &userCount);
-
-    // A lógica de autenticação deve definir currentUser
-    User currentUser = users[0]; // Para fins de exemplo, assumindo que o primeiro usuário é o atual
-
-    displayMenu(currentUser, users, &userCount, products, &productCount);
+    User currentUser; // Declarar o usuário atual
+    if (authenticate(users, &userCount, &currentUser)) { // Verifica se o login foi bem-sucedido
+        displayMenu(currentUser, users, &userCount, products, &productCount);
+    }
 
     saveUsers(users, userCount);
     saveProducts(products, productCount);

@@ -1,2 +1,4 @@
 admin admin123 1
 funcionario funcionario123 0
+Maria malu123 0
+larissa 123 0
