@@ -1,6 +1,2 @@
-Banana 3.00
-Maca 1.00
-Cebola 5.00
-Uva 4.00
-Pera 2.20
-Alho 1.50
+morango 7.00 2 banana
+Banana 3.00 6422476 Unit

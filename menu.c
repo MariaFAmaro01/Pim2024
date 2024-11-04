@@ -64,7 +64,7 @@ void displayMenu(User currentUser, User users[], int *userCount, Product product
 // OPÇÃO 1. ADICIONAR USUARIO
 void addUser(User users[], int *userCount) {
     if (*userCount >= MAX_USERS) {
-        printf("Não e possível adicionar mais usuarios.\n");
+        printf("Não e possivel adicionar mais usuarios.\n");
         return;
     }
 
@@ -83,6 +83,7 @@ void addUser(User users[], int *userCount) {
 
 // Função para remover usuário
 void removeUser(User users[], int *userCount) {
+    listarUsuarios(users, *userCount); // Listar usuários antes de remover
     char username[50];
     printf("\nDigite o nome de usuario a ser removido: ");
     scanf("%s", username);
@@ -94,6 +95,7 @@ void removeUser(User users[], int *userCount) {
             }
             (*userCount)--;
             printf("Usuario removido com sucesso!\n");
+            listarUsuarios(users, *userCount); // Lista os usuários após remover
             return;
         }
     }
@@ -102,27 +104,73 @@ void removeUser(User users[], int *userCount) {
 }
 
 // Função para consultar/editar usuário
-void consultEditUser(User users[], int userCount) {
+void consultEditUser(User users[], int *userCount) {
+    listarUsuarios(users, *userCount); 
     char username[50];
     printf("\nDigite o nome de usuario a ser consultado: ");
     scanf("%s", username);
 
-    for (int i = 0; i < userCount; i++) {
+    for (int i = 0; i < *userCount; i++) {
         if (strcmp(users[i].username, username) == 0) {
             printf("Usuario encontrado:\n");
             printf("Nome: %s\n", users[i].username);
             printf("Tipo: %s\n", users[i].isAdmin ? "Admin" : "Funcionario");
-            printf("Digite a nova senha (ou pressione Enter para manter a atual): ");
-            char newPassword[50];
-            scanf("%s", newPassword);
-            if (strlen(newPassword) > 0) {
-                strcpy(users[i].password, newPassword);
+
+             char escolhaSenha;
+            printf("Deseja alterar a senha? (s/n): ");
+            getchar();  // Limpa o buffer do Enter anterior
+            scanf("%c", &escolhaSenha);
+
+            if (escolhaSenha == 's' || escolhaSenha == 'S') {
+                char senhaAtual[50];
+                while (1) {
+                    printf("Digite a senha atual: ");
+                    scanf("%s", senhaAtual);
+
+                    if (strcmp(senhaAtual, users[i].password) == 0) {
+                        char novaSenha[50];
+                        printf("Senha correta! Digite a nova senha: ");
+                        scanf("%s", novaSenha);
+                        strcpy(users[i].password, novaSenha);
+                        printf("Senha atualizada com sucesso!\n");
+                        break;
+                    } else {
+                        printf("Senha incorreta. Tente novamente.\n");
+                    }
+                }
+            } else {
+                printf("Nenhuma alteracao na senha foi feita.\n");
             }
-            printf("Informacoes atualizadas com sucesso!\n");
+
+            
+            char escolhaTipo;
+            printf("Deseja alterar o tipo do usuario? (s/n): ");
+            getchar();  // Limpa o buffer do Enter anterior
+            scanf("%c", &escolhaTipo);
+
+            if (escolhaTipo == 's' || escolhaTipo == 'S') {
+                char novoTipo;
+                printf("Digite 'a' para Admin ou 'f' para Funcionario: ");
+                getchar();  // Limpa o buffer do Enter anterior
+                scanf("%c", &novoTipo);
+
+                if (novoTipo == 'a' || novoTipo == 'A') {
+                    users[i].isAdmin = 1;
+                    printf("Tipo do usuario atualizado para Admin.\n");
+                } else if (novoTipo == 'f' || novoTipo == 'F') {
+                    users[i].isAdmin = 0;
+                    printf("Tipo do usuario atualizado para Funcionario.\n");
+                } else {
+                    printf("Opcao invalida. Nenhuma alteracao no tipo de usuario foi feita.\n");
+                }
+            } else {
+                printf("Nenhuma alteracao no tipo do usuario foi feita.\n");
+            }
+
+            listarUsuarios(users, *userCount); // Lista os usuários após a possível edição
             return;
         }
     }
-
     printf("Usuario nao encontrado.\n");
 }
 
@@ -146,7 +194,7 @@ void manageUsers(User users[], int *userCount) {
                 removeUser(users, userCount);
                 break;
             case 3:
-                consultEditUser(users, *userCount);
+                consultEditUser(users, userCount);  
                 break;
             case 0:
                 printf("Voltando ao menu principal...\n");
@@ -167,25 +215,39 @@ void addProduct(Product products[], int *productCount) {
     }
 
     Product newProduct;
-        printf("\n\nNome do produto: ");
-        scanf("%s", newProduct.name);
-        
-        printf("Preço do produto: ");
-        scanf("%f", &newProduct.price);
-        
-        printf("Quantidade do produto: ");
-        scanf("%d", &newProduct.quantity);
+    printf("\n\nNome do produto: ");
+    scanf("%s", newProduct.name);
 
-        products[*productCount] = newProduct;
-        (*productCount)++; 
-        printf("Produto adicionado com sucesso!\n");
-        
-        char addMore;
-        printf("\nDeseja adicionar mais produtos? (s/n): ");
-        scanf(" %c", &addMore); 
-        if (addMore == 's' || addMore == 'S') {
-            addProduct(products, productCount); 
+    // Selecionar o tipo de precificação
+    char tipoPreco;
+    do {
+        printf("Tipo de precificacao (k para quilo, u para unidade): ");
+        scanf(" %c", &tipoPreco);
+        if (tipoPreco == 'k' || tipoPreco == 'K') {
+            strcpy(newProduct.pricingType, "Kg");
+        } else if (tipoPreco == 'u' || tipoPreco == 'U') {
+            strcpy(newProduct.pricingType, "Unit");
+        } else {
+            printf("Opcao invalida. Tente novamente.\n");
         }
+    } while (tipoPreco != 'k' && tipoPreco != 'K' && tipoPreco != 'u' && tipoPreco != 'U');
+
+    printf("Preco do produto (%s): ", newProduct.pricingType);
+    scanf("%f", &newProduct.price);
+
+    printf("Quantidade do produto: ");
+    scanf("%d", &newProduct.quantity);
+
+    products[*productCount] = newProduct;
+    (*productCount)++; 
+    printf("Produto adicionado com sucesso!\n");
+
+    char addMore;
+    printf("\nDeseja adicionar mais produtos? (s/n): ");
+    scanf(" %c", &addMore); 
+    if (addMore == 's' || addMore == 'S') {
+        addProduct(products, productCount); 
+    }
 }
 
 // Função para remover produto
@@ -220,46 +282,54 @@ void consultEditProduct(Product products[], int productCount) {
     char choice;
 
     // Exibe todos os produtos disponíveis
-    printf("\nProdutos disponiveis:\n");
+    printf("\nProdutos disponíveis:\n");
     for (int i = 0; i < productCount; i++) {
-        printf("ID: %d, Nome: %s, Preco: R$ %.2f\n", products[i].id, products[i].name, products[i].price);
+        printf("ID: %d, Nome: %s, Preço: R$ %.2f (%s)\n", products[i].id, products[i].name, products[i].price, products[i].pricingType);
     }
 
     while (1) {
         printf("\nDigite o ID do produto para consultar/editar (ou -1 para sair): \n");
         scanf("%d", &id);
 
-        // Permite sair do loop
-        if (id == -1) {
-            return; // Volta para o menu anterior
-        }
+        if (id == -1) return;
 
-        // Verifica se o ID é válido
-        int found = 0; // Flag para verificar se o produto foi encontrado
+        int found = 0; 
         for (int i = 0; i < productCount; i++) {
             if (products[i].id == id) {
-                found = 1; // Produto encontrado
+                found = 1; 
                 printf("Produto encontrado:\n");
-                printf("ID: %d, Nome: %s, Preco: R$ %.2f\n", products[i].id, products[i].name, products[i].price);
-                
-                // Pergunta se deseja editar
+                printf("ID: %d, Nome: %s, Preço: R$ %.2f (%s)\n", products[i].id, products[i].name, products[i].price, products[i].pricingType);
+
                 printf("Deseja editar este produto? (s/n): ");
-                scanf(" %c", &choice); // O espaço antes de %c consome qualquer nova linha pendente
+                scanf(" %c", &choice);
 
                 if (choice == 's' || choice == 'S') {
                     printf("Novo nome: ");
                     scanf("%s", products[i].name);
-                    printf("Novo preco: ");
+
+                    char novoTipo;
+                    do {
+                        printf("Novo tipo de precificação (k para quilo, u para unidade): ");
+                        scanf(" %c", &novoTipo);
+                        if (novoTipo == 'k' || novoTipo == 'K') {
+                            strcpy(products[i].pricingType, "Kg");
+                        } else if (novoTipo == 'u' || novoTipo == 'U') {
+                            strcpy(products[i].pricingType, "Unit");
+                        } else {
+                            printf("Opção inválida. Tente novamente.\n");
+                        }
+                    } while (novoTipo != 'k' && novoTipo != 'K' && novoTipo != 'u' && novoTipo != 'U');
+
+                    printf("Novo preço (%s): ", products[i].pricingType);
                     scanf("%f", &products[i].price);
+
                     printf("Produto atualizado com sucesso!\n");
                 }
-                break; // Sai do loop após encontrar o produto
+                break;
             }
         }
-
-        // Se o produto não foi encontrado
         if (!found) {
-            printf("Produto nao encontrado. Tente novamente.\n");
+            printf("Produto não encontrado. Tente novamente.\n");
         }
     }
 }

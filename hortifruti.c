@@ -31,7 +31,7 @@ void loadProducts(Product products[], int *productCount) {
     }
     
     while (fscanf(file, "%s %f", products[*productCount].name, &products[*productCount].price) != EOF) {
-        products[*productCount].id = *productCount; // Atribuindo o ID baseado no índice
+        products[*productCount].id = *productCount; 
         (*productCount)++;
     }
 

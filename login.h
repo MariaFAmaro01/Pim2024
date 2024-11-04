@@ -3,6 +3,7 @@
 
 #include "common.h"
 
-int authenticate(User users[], int *userCount, User *currentUser); // Atualize para ter 3 parâmetros
+void maskPassword(char *password, int maxLength); 
+int authenticate(User users[], int *userCount, User *currentUser); 
 
 #endif // LOGIN_H

@@ -9,12 +9,11 @@ int main() {
     int userCount = 0;
     int productCount = 0;
     
-    // Carregar usuários e produtos
     loadUsers(users, &userCount);
     loadProducts(products, &productCount);
 
-    User currentUser; // Declarar o usuário atual
-    if (authenticate(users, &userCount, &currentUser)) { // Verifica se o login foi bem-sucedido
+    User currentUser; 
+    if (authenticate(users, &userCount, &currentUser)) { 
         displayMenu(currentUser, users, &userCount, products, &productCount);
     }
 

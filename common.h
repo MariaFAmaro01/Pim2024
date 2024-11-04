@@ -1,7 +1,6 @@
 #ifndef COMMON_H
 #define COMMON_H
 
-// MENU
 #define MAX_USERS 100
 #define MAX_PRODUCTS 100
 
@@ -18,6 +17,7 @@ typedef struct {
     char name[100]; 
     float price; 
     int quantity;  
+    char pricingType[10]; 
 } Product;
 
 // Estrutura para Recibo
@@ -36,13 +36,14 @@ typedef struct {
 } ReceiptItem;
 
 // Funções para carregar e salvar usuários, produtos e recibo 
+void listarUsuarios(User users[], int userCount);
+void addUser(User users[], int *userCount);
+void removeUser(User users[], int *userCount);
+void consultEditUser(User users[], int *userCount);
 void loadUsers(User users[], int *userCount);
 void saveUsers(User users[], int userCount);
 void loadProducts(Product products[], int *productCount);
 void saveProducts(Product products[], int productCount);
 void manageSales(Product products[], int *productCount);
-
-
-
 
 #endif // COMMON_H
