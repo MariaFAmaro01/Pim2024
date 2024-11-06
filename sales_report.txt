@@ -42,3 +42,16 @@ Uva - Quantidade: 3.000 Unid - Preco unitario: R$ 4.50 - Total: R$ 13.50
 Cebola - Quantidade: 0.300 Kg - Preco unitario: R$ 4.30 - Total: R$ 1.29
 Total da venda: R$ 28.13
 
+Venda realizada:
+Cliente: Cliente3
+CPF: 547893625
+Maca - Quantidade: 0.300 Kg - Preco unitario: R$ 4.90 - Total: R$ 1.47
+Alface - Quantidade: 2.000 Unid - Preco unitario: R$ 2.00 - Total: R$ 4.00
+Total da venda: R$ 5.47
+
+Venda realizada:
+Cliente: Cliente04
+CPF: 54559113840
+Morango - Quantidade: 4.000 Unid - Preco unitario: R$ 6.00 - Total: R$ 24.00
+Total da venda: R$ 24.00
+
