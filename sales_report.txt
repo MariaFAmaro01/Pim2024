@@ -20,3 +20,25 @@ Cliente: cliente0, CPF: N/A
 Pera - Quantidade: 2 - Preço unitario: R$ 5.25 - Total: R$ 10.50
 Total da venda: R$ 10.50
 
+Venda realizada:
+Cliente: cliente01
+CPF: N/A
+Banana - Quantidade: 1.200 Kg - Preço unitário: R$ 6.70 - Total: R$ 8.04
+Uva - Quantidade: 5.000 Unid - Preço unitário: R$ 4.50 - Total: R$ 22.50
+Total da venda: R$ 30.54
+
+Venda realizada:
+Cliente: Cliente02
+CPF: N/A
+Morango - Quantidade: 2.000 Unid - Preco unitario: R$ 6.00 - Total: R$ 12.00
+Total da venda: R$ 12.00
+
+Venda realizada:
+Cliente: Cliente03
+CPF: N/A
+Banana - Quantidade: 0.200 Kg - Preco unitario: R$ 6.70 - Total: R$ 1.34
+Morango - Quantidade: 2.000 Unid - Preco unitario: R$ 6.00 - Total: R$ 12.00
+Uva - Quantidade: 3.000 Unid - Preco unitario: R$ 4.50 - Total: R$ 13.50
+Cebola - Quantidade: 0.300 Kg - Preco unitario: R$ 4.30 - Total: R$ 1.29
+Total da venda: R$ 28.13
+

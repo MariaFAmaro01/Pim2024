@@ -28,9 +28,9 @@ typedef struct {
 } Receipt;
 
 typedef struct {
-    Product product; // Produto vendido
-    int quantity; // Quantidade vendida
-    float totalPrice; // Total do item
+    Product product;   
+    float quantity;   
+    float totalPrice; 
 } ReceiptItem;
 
 // Funções para carregar e salvar usuários, produtos e recibo 
@@ -46,5 +46,8 @@ void manageSales(Product products[], int *productCount);
 void makeSale(Product products[], int *productCount);
 void salesReport();
 void manuSales(Product products[], int *productCount);
+
+// Variável global para controle do contador de clientes
+extern int clientCounter;
 
 #endif // COMMON_H

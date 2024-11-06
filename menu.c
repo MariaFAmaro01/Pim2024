@@ -436,17 +436,32 @@ void manageSales(Product products[], int *productCount) {
     } while (choice != 0);
 }
 
- 
+
+int clientCounter = 1;  
+
 // Função para realizar a venda
 void makeSale(Product products[], int *productCount) {
-    char productName[50];  
+    char productName[50];
     int quantity;
     float totalPrice = 0.0;
     Receipt receipt;
-    ReceiptItem receiptItems[100]; 
+    ReceiptItem receiptItems[100];
     int itemCount = 0;
+    char cpfOption;
 
+    
+    snprintf(receipt.customerName, sizeof(receipt.customerName), "cliente%02d", clientCounter++);
+    
     printf("\n\n-----REALIZAR VENDA-----\n");
+
+    printf("CPF na nota? (s/n): ");
+    scanf(" %c", &cpfOption);
+    if (cpfOption == 's' || cpfOption == 'S') {
+        printf("Digite o CPF do cliente: ");
+        scanf(" %11s", receipt.cpf);
+    } else {
+        strcpy(receipt.cpf, "N/A");
+    }
 
     while (1) {
         printf("Digite o nome do produto: ");
@@ -465,63 +480,48 @@ void makeSale(Product products[], int *productCount) {
 
         if (!found) {
             printf("Produto nao encontrado!\n");
-            continue;  
+            continue;
         }
 
         // Verifica o tipo de preço e solicita a quantidade corretamente
         if (strcmp(selectedProduct.pricingType, "Kg") == 0) {
-            // Produto é vendido por quilo
             printf("Digite a quantidade de %s em gramas (ex: 500 para 500g): ", selectedProduct.name);
             scanf("%d", &quantity);
-
-            // Converte gramas para quilos (1 kg = 1000 gramas)
             float quantityInKg = quantity / 1000.0;
             float itemTotalPrice = selectedProduct.price * quantityInKg;
             totalPrice += itemTotalPrice;
-
             receiptItems[itemCount].product = selectedProduct;
-            receiptItems[itemCount].quantity = quantityInKg;  // Armazena a quantidade em quilos
+            receiptItems[itemCount].quantity = quantityInKg;
             receiptItems[itemCount].totalPrice = itemTotalPrice;
             itemCount++;
-            
-            printf("Produto %s (%.3f kg) adicionado com sucesso! Total parcial: R$ %.2f\n", selectedProduct.name, quantityInKg, itemTotalPrice);
         } else {
-            // Produto é vendido por unidade
             printf("Quantidade de %s a ser vendida: ", selectedProduct.name);
             scanf("%d", &quantity);
-
-            if (quantity <= 0) {
-                printf("Quantidade invalida!\n");
-                continue; 
-            }
-
             float itemTotalPrice = selectedProduct.price * quantity;
             totalPrice += itemTotalPrice;
-
             receiptItems[itemCount].product = selectedProduct;
-            receiptItems[itemCount].quantity = quantity;  // Quantidade em unidades
+            receiptItems[itemCount].quantity = quantity;
             receiptItems[itemCount].totalPrice = itemTotalPrice;
             itemCount++;
-            
-            printf("Produto %s (Quantidade: %d) adicionado com sucesso! Total parcial: R$ %.2f\n", selectedProduct.name, quantity, itemTotalPrice);
         }
 
         char addMore;
-        printf("Deseja adicionar mais produtos a venda? (s/n): \n");
+        printf("Deseja adicionar mais produtos a venda? (s/n): ");
         scanf(" %c", &addMore);
         if (addMore == 'n' || addMore == 'N') {
-            break; 
+            break;
         }
     }
 
-    receipt.totalPrice = totalPrice; 
+    receipt.totalPrice = totalPrice;
+
     printf("\n--- Recibo ---\n");
     printf("Cliente: %s\n", receipt.customerName);
     printf("CPF: %s\n", receipt.cpf);
     printf("Itens comprados:\n");
 
     for (int i = 0; i < itemCount; i++) {
-        printf("%s - Quantidade: %.3f %s - Preço unitário: R$ %.2f - Total: R$ %.2f\n",
+        printf("%s - Quantidade: %.3f %s - Preco unitario: R$ %.2f - Total: R$ %.2f\n",
             receiptItems[i].product.name,
             receiptItems[i].quantity,
             strcmp(receiptItems[i].product.pricingType, "Kg") == 0 ? "Kg" : "Unid",
@@ -531,22 +531,38 @@ void makeSale(Product products[], int *productCount) {
 
     printf("Total: R$ %.2f\n", receipt.totalPrice);
     printf("----------------\n");
-}
 
+    FILE *file = fopen("sales_report.txt", "a");
+    if (file) {
+        fprintf(file, "Venda realizada:\n");
+        fprintf(file, "Cliente: %s\n", receipt.customerName);
+        fprintf(file, "CPF: %s\n", receipt.cpf);
+        for (int i = 0; i < itemCount; i++) {
+            fprintf(file, "%s - Quantidade: %.3f %s - Preco unitario: R$ %.2f - Total: R$ %.2f\n",
+                receiptItems[i].product.name,
+                receiptItems[i].quantity,
+                strcmp(receiptItems[i].product.pricingType, "Kg") == 0 ? "Kg" : "Unid",
+                receiptItems[i].product.price,
+                receiptItems[i].totalPrice);
+        }
+        fprintf(file, "Total da venda: R$ %.2f\n\n", receipt.totalPrice);
+        fclose(file);
+    }
+    printf("Venda registrada no relatorio!\n");
+}
 
 
 // Função relatório de vendas
 void salesReport() {
     FILE *file = fopen("sales_report.txt", "r");
     if (file == NULL) {
-        printf("Erro ao abrir o arquivo de relatório de vendas.\n");
+        printf("Erro ao abrir o arquivo de relatorio de vendas.\n");
         return;
     }
 
     char line[256];
     printf("\n--- Relatorio de Vendas ---\n");
 
-    // Exibe cada linha do relatório
     while (fgets(line, sizeof(line), file)) {
         printf("%s", line);
     }
