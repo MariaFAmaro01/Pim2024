@@ -10,6 +10,9 @@ void manageStock(Product products[], int *productCount);
 void manageSales(Product products[], int *productCount);
 void listarUsuarios(User users[], int userCount);
 void consultEditUser(User users[], int *userCount); 
+void manuSales(Product products[], int *productCount);  
+void makeSale(Product products[], int *productCount); 
+void salesReport();
 
 
 #endif // MENU_H

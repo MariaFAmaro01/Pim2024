@@ -13,20 +13,18 @@ typedef struct {
 
 // Estrutura para adicionar produto 
 typedef struct {
-    int id;           
-    char name[100]; 
-    float price; 
+    int id;
+    char name[50];
+    float price;
     int quantity;  
-    char pricingType[10]; 
+    char pricingType[4];  
 } Product;
 
 // Estrutura para Recibo
 typedef struct {
-    char customerName[100];
-    char cpf[12]; // CPF pode ter 11 dígitos + 1 para o terminador de string
-    Product product;
-    int quantity;
-    float totalPrice;
+    char customerName[50]; 
+    char cpf[12];  
+    float totalPrice;   
 } Receipt;
 
 typedef struct {
@@ -45,5 +43,8 @@ void saveUsers(User users[], int userCount);
 void loadProducts(Product products[], int *productCount);
 void saveProducts(Product products[], int productCount);
 void manageSales(Product products[], int *productCount);
+void makeSale(Product products[], int *productCount);
+void salesReport();
+void manuSales(Product products[], int *productCount);
 
 #endif // COMMON_H

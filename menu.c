@@ -3,6 +3,8 @@
 #include "menu.h"
 #include "common.h"
 
+
+
 // MENU 
 void displayMenu(User currentUser, User users[], int *userCount, Product products[], int *productCount) {
     int option;
@@ -181,7 +183,7 @@ void manageUsers(User users[], int *userCount) {
         printf("\n\n--- GERENCIAR USUARIOS ---\n");
         printf("1. Adicionar Usuario\n");
         printf("2. Remover Usuario\n");
-        printf("3. Consultar/Editar Usuario\n");
+        printf("3. Vizualizar ou Editar Usuarios\n");
         printf("0. Voltar ao Menu Principal\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &option);
@@ -206,19 +208,20 @@ void manageUsers(User users[], int *userCount) {
     } while (option != 0);
 }
 
-
+int nextId = 1; // Variavel global 
 // OPÇÃO 2. GERENCIAR ESTOQUE
 void addProduct(Product products[], int *productCount) {
     if (*productCount >= MAX_PRODUCTS) {
-        printf("Capacidade máxima de produtos atingida.\n");
+        printf("Capacidade maxima de produtos atingida.\n");
         return;
     }
 
     Product newProduct;
+    newProduct.id = nextId++;
+
     printf("\n\nNome do produto: ");
     scanf("%s", newProduct.name);
 
-    // Selecionar o tipo de precificação
     char tipoPreco;
     do {
         printf("Tipo de precificacao (k para quilo, u para unidade): ");
@@ -240,7 +243,7 @@ void addProduct(Product products[], int *productCount) {
 
     products[*productCount] = newProduct;
     (*productCount)++; 
-    printf("Produto adicionado com sucesso!\n");
+    printf("Produto adicionado com sucesso! ID: %d\n", newProduct.id);
 
     char addMore;
     printf("\nDeseja adicionar mais produtos? (s/n): ");
@@ -250,55 +253,63 @@ void addProduct(Product products[], int *productCount) {
     }
 }
 
-// Função para remover produto
+// Função para remover produto 
 void removeProduct(Product products[], int *productCount) {
     while (1) {
-        int productId;
-        printf("ID do produto a remover: ");
-        scanf("%d", &productId);
+        char productName[50];
+        printf("Nome do produto a remover: ");
+        scanf("%s", productName);
 
-        if (productId >= 0 && productId < *productCount) {
-            for (int i = productId; i < *productCount - 1; i++) {
-                products[i] = products[i + 1];
+        int found = 0;
+        for (int i = 0; i < *productCount; i++) {
+            if (strcmp(products[i].name, productName) == 0) {
+                
+                for (int j = i; j < *productCount - 1; j++) {
+                    products[j] = products[j + 1];
+                }
+                (*productCount)--;
+                found = 1;
+                printf("Produto removido com sucesso!\n");
+                break;
             }
-            (*productCount)--;
-            printf("Produto removido com sucesso!\n");
-        } else {
+        }
+
+        if (!found) {
             printf("Produto nao encontrado!\n");
         }
 
         char continueRemoving;
         printf("Deseja remover outro produto? (s/n): ");
         scanf(" %c", &continueRemoving);
-        
+
         if (continueRemoving == 'n' || continueRemoving == 'N') {
             break;
         }
     }
 }
 
+// Função para editar produto pelo nome
 void consultEditProduct(Product products[], int productCount) {
-    int id;
+    char productName[50];
     char choice;
 
-    // Exibe todos os produtos disponíveis
-    printf("\nProdutos disponíveis:\n");
+    printf("\nProdutos disponiveis:\n");
     for (int i = 0; i < productCount; i++) {
-        printf("ID: %d, Nome: %s, Preço: R$ %.2f (%s)\n", products[i].id, products[i].name, products[i].price, products[i].pricingType);
+        printf("ID: %d, Nome: %s, Preco: R$ %.2f (%s)\n", products[i].id, products[i].name, products[i].price, products[i].pricingType);
     }
 
     while (1) {
-        printf("\nDigite o ID do produto para consultar/editar (ou -1 para sair): \n");
-        scanf("%d", &id);
+        printf("\nDigite o nome do produto para consultar ou editar (ou 'sair' para sair): ");
+        scanf("%s", productName);
 
-        if (id == -1) return;
+        if (strcmp(productName, "sair") == 0) return;
 
-        int found = 0; 
+        int found = 0;
         for (int i = 0; i < productCount; i++) {
-            if (products[i].id == id) {
-                found = 1; 
+            if (strcmp(products[i].name, productName) == 0) {
+                found = 1;
                 printf("Produto encontrado:\n");
-                printf("ID: %d, Nome: %s, Preço: R$ %.2f (%s)\n", products[i].id, products[i].name, products[i].price, products[i].pricingType);
+                printf("ID: %d, Nome: %s, Preco: R$ %.2f (%s)\n", products[i].id, products[i].name, products[i].price, products[i].pricingType);
 
                 printf("Deseja editar este produto? (s/n): ");
                 scanf(" %c", &choice);
@@ -309,18 +320,18 @@ void consultEditProduct(Product products[], int productCount) {
 
                     char novoTipo;
                     do {
-                        printf("Novo tipo de precificação (k para quilo, u para unidade): ");
+                        printf("Novo tipo de precificacao (k para quilo, u para unidade): ");
                         scanf(" %c", &novoTipo);
                         if (novoTipo == 'k' || novoTipo == 'K') {
                             strcpy(products[i].pricingType, "Kg");
                         } else if (novoTipo == 'u' || novoTipo == 'U') {
                             strcpy(products[i].pricingType, "Unit");
                         } else {
-                            printf("Opção inválida. Tente novamente.\n");
+                            printf("Opcao invalida. Tente novamente.\n");
                         }
                     } while (novoTipo != 'k' && novoTipo != 'K' && novoTipo != 'u' && novoTipo != 'U');
 
-                    printf("Novo preço (%s): ", products[i].pricingType);
+                    printf("Novo preco (%s): ", products[i].pricingType);
                     scanf("%f", &products[i].price);
 
                     printf("Produto atualizado com sucesso!\n");
@@ -328,11 +339,39 @@ void consultEditProduct(Product products[], int productCount) {
                 break;
             }
         }
+
         if (!found) {
-            printf("Produto não encontrado. Tente novamente.\n");
+            printf("Produto nao encontrado. Tente novamente.\n");
         }
     }
 }
+
+void updateStock(Product products[], int productCount) {
+    char productName[50];
+    int found = 0;
+
+    printf("Digite o nome do produto para atualizar o estoque: ");
+    scanf("%s", productName);
+
+    for (int i = 0; i < productCount; i++) {
+        if (strcmp(products[i].name, productName) == 0) {
+            found = 1;
+            int newQuantity;
+            printf("Quantidade atual de %s: %d\n", products[i].name, products[i].quantity);
+            printf("Digite a nova quantidade: ");
+            scanf("%d", &newQuantity);
+
+            products[i].quantity = newQuantity;
+            printf("Estoque atualizado com sucesso!\n");
+            break;
+        }
+    }
+
+    if (!found) {
+        printf("Produto nao encontrado.\n");
+    }
+}
+
 
 // Função para gerenciar estoque
 void manageStock(Product products[], int *productCount) {
@@ -341,7 +380,8 @@ void manageStock(Product products[], int *productCount) {
         printf("\n--- Gerenciar Estoque ---\n");
         printf("1. Adicionar Produto\n");
         printf("2. Remover Produto\n");
-        printf("3. Consultar/Editar Produto\n");
+        printf("3. Editar e Vizualizar Produtos\n");
+        printf("4. Atualizar Estoque\n");
         printf("0. Voltar ao Menu Principal\n");
         printf("Escolha uma opcao: ");
         scanf("%d", &choice);
@@ -356,11 +396,14 @@ void manageStock(Product products[], int *productCount) {
             case 3:
                 consultEditProduct(products, *productCount);
                 break;
+            case 4:
+                updateStock(products, *productCount);
+                break;
             case 0:
                 printf("Voltando ao menu principal...\n");
                 break;
             default:
-                printf("Opção invalida. Tente novamente.\n");
+                printf("Opcao invalida. Tente novamente.\n");
         }
     } while (choice != 0);
 }
@@ -368,99 +411,145 @@ void manageStock(Product products[], int *productCount) {
 
 // 3. GERENCIAR VENDAS
 void manageSales(Product products[], int *productCount) {
-    char includeCPF;
-    char cpf[12];
-    int productId;
+    int choice;
+    do {
+        printf("\n--- Gerenciar Vendas ---\n");
+        printf("1. Realizar Venda\n");
+        printf("2. Relatorio de Vendas\n");
+        printf("0. Voltar ao Menu Principal\n");
+        printf("Escolha uma opcao: ");
+        scanf("%d", &choice);
+
+        switch (choice) {
+            case 1:
+                makeSale(products, productCount);  
+                break;
+            case 2:
+                salesReport(); 
+                break;
+            case 0:
+                printf("Voltando ao menu principal...\n");
+                break;
+            default:
+                printf("Opcao invalida. Tente novamente.\n");
+        }
+    } while (choice != 0);
+}
+
+ 
+// Função para realizar a venda
+void makeSale(Product products[], int *productCount) {
+    char productName[50];  
     int quantity;
-    int customerCounter = 0; // Contador para nomes de clientes
-    float totalPrice = 0.0; // Armazena o total acumulado
-    Receipt receipt; // Recebe o recibo acumulado
-    ReceiptItem receiptItems[100]; // Array para armazenar os produtos vendidos
-    int itemCount = 0; // Contador de itens no recibo
+    float totalPrice = 0.0;
+    Receipt receipt;
+    ReceiptItem receiptItems[100]; 
+    int itemCount = 0;
 
-    // Inicializa os campos do recibo
-    strcpy(receipt.customerName, "Cliente não identificado");
-    strcpy(receipt.cpf, "N/A");
-
-    // Pergunta se deseja incluir CPF
     printf("\n\n-----REALIZAR VENDA-----\n");
-    printf("CPF na nota? (s/n): ");
-    scanf(" %c", &includeCPF);
-
-    // Gerar nome do cliente automaticamente
-    snprintf(receipt.customerName, sizeof(receipt.customerName), "cliente%d", customerCounter++);
-    
-    if (includeCPF == 's' || includeCPF == 'S') {
-        printf("CPF do cliente: ");
-        scanf("%s", cpf); // Considere validar o CPF aqui
-        strcpy(receipt.cpf, cpf);
-    } else {
-        strcpy(receipt.cpf, "N/A");
-    }
 
     while (1) {
+        printf("Digite o nome do produto: ");
+        scanf(" %49[^\n]", productName);
 
-        // Solicita o ID do produto
-        printf("Digite o ID do produto: ");
-        scanf("%d", &productId);
+        int found = 0;
+        Product selectedProduct;
 
-        // Verifica se o ID do produto é válido
-        if (productId < 0 || productId >= *productCount) {
+        for (int i = 0; i < *productCount; i++) {
+            if (strcmp(products[i].name, productName) == 0) {
+                selectedProduct = products[i];
+                found = 1;
+                break;
+            }
+        }
+
+        if (!found) {
             printf("Produto nao encontrado!\n");
-            continue; // Retorna ao início do loop se o produto não for válido
+            continue;  
         }
 
-        Product selectedProduct = products[productId]; // Seleciona o produto
+        // Verifica o tipo de preço e solicita a quantidade corretamente
+        if (strcmp(selectedProduct.pricingType, "Kg") == 0) {
+            // Produto é vendido por quilo
+            printf("Digite a quantidade de %s em gramas (ex: 500 para 500g): ", selectedProduct.name);
+            scanf("%d", &quantity);
 
-        // Solicita a quantidade
-        printf("Quantidade de %s a ser vendida: ", selectedProduct.name);
-        scanf("%d", &quantity);
+            // Converte gramas para quilos (1 kg = 1000 gramas)
+            float quantityInKg = quantity / 1000.0;
+            float itemTotalPrice = selectedProduct.price * quantityInKg;
+            totalPrice += itemTotalPrice;
 
-        // Verifica se a quantidade é válida
-        if (quantity <= 0) {
-            printf("Quantidade invalida!\n");
-            continue; // Retorna ao início do loop se a quantidade não for válida
+            receiptItems[itemCount].product = selectedProduct;
+            receiptItems[itemCount].quantity = quantityInKg;  // Armazena a quantidade em quilos
+            receiptItems[itemCount].totalPrice = itemTotalPrice;
+            itemCount++;
+            
+            printf("Produto %s (%.3f kg) adicionado com sucesso! Total parcial: R$ %.2f\n", selectedProduct.name, quantityInKg, itemTotalPrice);
+        } else {
+            // Produto é vendido por unidade
+            printf("Quantidade de %s a ser vendida: ", selectedProduct.name);
+            scanf("%d", &quantity);
+
+            if (quantity <= 0) {
+                printf("Quantidade invalida!\n");
+                continue; 
+            }
+
+            float itemTotalPrice = selectedProduct.price * quantity;
+            totalPrice += itemTotalPrice;
+
+            receiptItems[itemCount].product = selectedProduct;
+            receiptItems[itemCount].quantity = quantity;  // Quantidade em unidades
+            receiptItems[itemCount].totalPrice = itemTotalPrice;
+            itemCount++;
+            
+            printf("Produto %s (Quantidade: %d) adicionado com sucesso! Total parcial: R$ %.2f\n", selectedProduct.name, quantity, itemTotalPrice);
         }
 
-        // Calcula o total
-         float itemTotalPrice = selectedProduct.price * quantity;
-        totalPrice += itemTotalPrice; // Acumula o preço total
-
-        // Armazena o item no recibo
-        receiptItems[itemCount].product = selectedProduct;
-        receiptItems[itemCount].quantity = quantity;
-        receiptItems[itemCount].totalPrice = itemTotalPrice;
-        itemCount++; // Incrementa o contador de itens
-
-        // Exibe a confirmação da venda
-        printf("Produto %s adiconado com sucesso! Total parcial: R$ %.2f\n", selectedProduct.name, itemTotalPrice);
-
-        // Pergunta se deseja adicionar mais produtos
         char addMore;
         printf("Deseja adicionar mais produtos a venda? (s/n): \n");
         scanf(" %c", &addMore);
         if (addMore == 'n' || addMore == 'N') {
-            break; // Sai do loop se não quiser adicionar mais produtos
+            break; 
         }
     }
 
-    // Gera o recibo final
-    receipt.totalPrice = totalPrice; // Total final do recibo
+    receipt.totalPrice = totalPrice; 
     printf("\n--- Recibo ---\n");
     printf("Cliente: %s\n", receipt.customerName);
     printf("CPF: %s\n", receipt.cpf);
     printf("Itens comprados:\n");
 
     for (int i = 0; i < itemCount; i++) {
-        printf("%s - Quantidade: %d - Preco unitario: R$ %.2f - Total: R$ %.2f\n",
-               receiptItems[i].product.name,
-               receiptItems[i].quantity,
-               receiptItems[i].product.price,
-               receiptItems[i].totalPrice);
+        printf("%s - Quantidade: %.3f %s - Preço unitário: R$ %.2f - Total: R$ %.2f\n",
+            receiptItems[i].product.name,
+            receiptItems[i].quantity,
+            strcmp(receiptItems[i].product.pricingType, "Kg") == 0 ? "Kg" : "Unid",
+            receiptItems[i].product.price,
+            receiptItems[i].totalPrice);
     }
 
     printf("Total: R$ %.2f\n", receipt.totalPrice);
     printf("----------------\n");
 }
- 
 
+
+
+// Função relatório de vendas
+void salesReport() {
+    FILE *file = fopen("sales_report.txt", "r");
+    if (file == NULL) {
+        printf("Erro ao abrir o arquivo de relatório de vendas.\n");
+        return;
+    }
+
+    char line[256];
+    printf("\n--- Relatorio de Vendas ---\n");
+
+    // Exibe cada linha do relatório
+    while (fgets(line, sizeof(line), file)) {
+        printf("%s", line);
+    }
+
+    fclose(file);
+}

@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include "common.h"
-#include "products.h" // Assegure-se de ter um cabeçalho para produtos
+#include "products.h" 
+
+extern int nextId;
 
 void loadProducts(Product products[], int *productCount) {
     FILE *file = fopen("products.txt", "r");
@@ -10,15 +12,20 @@ void loadProducts(Product products[], int *productCount) {
     }
 
     *productCount = 0;
-    while (fscanf(file, "%s %f %d %s", 
+    while (fscanf(file, "%d %s %f %d %s", 
+                  &products[*productCount].id, 
                   products[*productCount].name, 
                   &products[*productCount].price, 
                   &products[*productCount].quantity, 
-                  products[*productCount].pricingType) == 4) { 
+                  products[*productCount].pricingType) == 5) {
+        if (products[*productCount].id >= nextId) {
+            nextId = products[*productCount].id + 1;
+        }
         (*productCount)++;
     }
     fclose(file);
 }
+
 
 void saveProducts(Product products[], int productCount) {
     FILE *file = fopen("products.txt", "w");
@@ -28,11 +35,12 @@ void saveProducts(Product products[], int productCount) {
     }
 
     for (int i = 0; i < productCount; i++) {
-        fprintf(file, "%s %.2f %d %s\n", 
+        fprintf(file, "%d %s %.2f %d %s\n", 
+                products[i].id, 
                 products[i].name, 
                 products[i].price, 
                 products[i].quantity, 
-                products[i].pricingType); 
+                products[i].pricingType);
     }
     fclose(file);
 }

@@ -1,0 +1,22 @@
+Venda realizada:
+Cliente: cliente0, CPF: N/A
+Morango - Quantidade: 2 - Preço unitario: R$ 6.00 - Total: R$ 12.00
+Pera - Quantidade: 30 - Preço unitario: R$ 5.25 - Total: R$ 157.50
+Uva - Quantidade: 2 - Preço unitario: R$ 4.50 - Total: R$ 9.00
+Total da venda: R$ 178.50
+
+Venda realizada:
+Cliente: cliente0, CPF: 54559113840
+Uva - Quantidade: 1 - Preço unitario: R$ 4.50 - Total: R$ 4.50
+Total da venda: R$ 4.50
+
+Venda realizada:
+Cliente: cliente0, CPF: N/A
+Maca - Quantidade: 5 - Preço unitario: R$ 4.90 - Total: R$ 24.50
+Total da venda: R$ 24.50
+
+Venda realizada:
+Cliente: cliente0, CPF: N/A
+Pera - Quantidade: 2 - Preço unitario: R$ 5.25 - Total: R$ 10.50
+Total da venda: R$ 10.50
+
